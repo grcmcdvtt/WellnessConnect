@@ -1,0 +1,37 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.title {
+    background-color: #ef629a;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.content {
+    padding: 30px;
+}
+
+.content h2 {
+    text-align: center;
+    color: #333;
+}
+.info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.info div {
+    width: 35%;
+}
+

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellnessConnect Homepage</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn">
+            <img src="/static/icons/menu.png" alt="Menu">
+        </button>
+        <ul>
+            <li><a href="/user/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/user/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+            <li><a href="/user/activity/tracker"><img src="/static/icons/activity.png" class="icon"><span>Activity Tracker</span></a></li>
+            <li><a href="/user/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>
+            <li><a href="/user/reminders"><img src="/static/icons/reminders.png" class="icon"><span>Reminders</span></a></li>
+        </ul>
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <h1>
+            <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+            WellnessConnect
+        </h1>
+
+        <main>
+
+            <div class="points-view">
+                <h2>Points Overview</h2>
+                <!-- Points Progress Tracker -->
+                <div class="progress-streak-wrapper">
+                    <div class="points-tracker">
+                        <div class="timeline-labels">
+                            <span>0</span>
+                            <span>250</span>
+                            <span>500</span>
+                            <span>750</span>
+                            <span>1000</span>
+                        </div>
+                        <div class="timeline-bar">
+                            <div class="progress-fill" style="width: {{ percentage }}%; color: black;">
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+
+                <!-- Streak + Points Summary Hub -->
+                <div id ="pts-hub">
+                    <div id="pts-hub-items">
+                        <span>🔥 {{ streak }}</span>
+                        <span>🌟 {{ raw_points }} pts</span>
+                        <span>💰 {{ spendable_points }} pts</span>
+                    </div>
+                </div>
+
+
+                <a href="/user/vouchers" class="store-link">
+                    <img id="cart_icon" src="/static/icons/shopping_cart.png" width="24px" alt="Icon">
+                    <span>Voucher Store</span>
+                </a>                
+
+            </div>
+
+            <!-- User activity logs -->
+            <div class="tables">
+                <h2>Your Activity Logs</h2><br>
+            
+                {% if logs %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Logged At</th>
+                                <th>Activity</th>
+                                <th>Value</th>
+                                <th>Unit</th>
+                                <th>Exercise Type</th>
+                                <th>Proof</th>
+                                <th>Proof Valid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr class="activity-log-row {% if not loop.first %}hidden-row{% endif %}">
+                                <td>{{ log.logged_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ log.activity_type }}</td>
+                                <td>{{ log.value }}</td>
+                                <td>{{ log.unit or '' }}</td>
+                                <td>{{ log.exercise_type or '—' }}</td>
+                                <td>{{ 'Yes' if log.proof else 'No' }}</td>
+                                <td>
+                                    {% if log.proof_valid is none %}
+                                        Pending
+                                    {% elif log.proof_valid %}
+                                        Valid
+                                    {% else %}
+                                        Rejected
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                        <button class="toggle-btn" onclick="toggleLogSection('activity-log-row', this)">Show All</button>
+                    
+                        <form method="POST" action="{{ url_for('clear_activities') }}" 
+                              onsubmit="event.preventDefault(); openConfirmModal('Clear all activity logs?', this);" 
+                              style="display: inline;">
+                              <button class="action-btn" type="submit" style="white-space: nowrap;">
+                                Clear All Logs
+                            </button>
+                            
+                        </form>
+                    </div>
+                    
+                    
+
+                    
+                
+                {% else %}
+                    <p class="no-logs">You haven't logged any activities yet.</p>
+                {% endif %}
+            </div>            
+            
+            <div class="homepage-panels">
+                <h2>Leaderboard</h2>
+            
+                <!-- Filter Options -->
+                <label for="filter">Sort By:</label>
+                <select class="action-btn activity-drop-down" id="filter" onchange="window.location.href='?filter=' + this.value;">
+                    <option value="highest" {% if current_filter == 'highest' %}selected{% endif %}>Highest Points</option>
+                    <option value="lowest" {% if current_filter == 'lowest' %}selected{% endif %}>Lowest Points</option>
+                </select>
+            
+                <!-- Leaderboard Table -->
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        {% for user in leaderboard %}
+                        <tr {% if user.username == user.username %}style="font-weight: bold;"{% endif %}>
+                            <td>{{ user.rank }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+
+        </main>
+    </div>
+
+    <!-- Global Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+			<span class="close" onclick="closeModal()">&times;</span>
+			<p id="confirmMessage"></p>
+			<div id="confirmButtons" style="margin-top: 20px; text-align: center;">
+				<button class="action-btn" onclick="confirmAction()" style="margin-right: 10px;">Yes</button>
+				<button class="action-btn" onclick="closeModal()">No</button>
+			</div>          
+        </div>
+    </div>
+
+	<!-- FLASH MESSAGES -->
+	{% with messages = get_flashed_messages(with_categories=true, category_filter=['my-activities']) %}
+		{% if messages %}
+			<script>
+				window.hasFlashMessage = true;
+				window.flashMessages = {{ messages | tojson }};
+			</script>
+		{% else %}
+			<script>
+				window.hasFlashMessage = false;
+				window.flashMessages = [];
+			</script>
+		{% endif %}
+	{% endwith %}
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

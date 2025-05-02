@@ -1,0 +1,507 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+/* GLOBAL */
+* {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* LOGO */
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+textarea {
+  padding: 10px;
+}
+
+/* ICONS */
+.icon {
+  width: 25px;
+  height: 25px;
+  margin-right: 12px;
+}
+
+/* ---------- Sidebar ---------- */
+body {
+    background-color: #f8f8f8;
+}
+
+.sidebar {
+    width: 60px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    justify-content: space-between;
+    padding: 15px 0 20px;
+
+}
+
+.sidebar.expanded {
+    width: 220px;
+    align-items: flex-start;
+    padding-left: 15px;
+}
+
+
+/* Toggle & Logout Button */
+.toggle-btn, .logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Resize button icons */
+.toggle-btn img, .logout-btn img {
+    width: 25px;
+    height: 25px;
+    display: block;
+}
+
+/* Move toggle button when expanded */
+.sidebar.expanded .toggle-btn {
+    align-self: flex-end;
+    justify-content: flex-end;
+    margin-right: 15px;
+}
+
+/* Sidebar Menu */
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li a{
+    /* padding: 10px; */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar ul li:hover, .logout-btn:hover {
+    background: #f0f0f0;
+}
+
+/* Hide text when collapsed */
+.sidebar ul li span, .logout-btn span {
+    display: none;
+}
+
+/* Show text when expanded */
+.sidebar.expanded ul li span, .sidebar.expanded .logout-btn span {
+    display: inline;
+}
+
+/* Logout Hover */
+.logout-btn:hover {
+    color: #d9534f;
+}
+
+
+/* ------- Reminders Section ------- */
+
+.main-content {
+    /*background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 800px;
+    */
+    margin: 20px auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: unset;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+  
+
+.page-content {
+    margin-left: 60px;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.expanded ~ .page-content {
+    margin-left: 220px;
+}
+  
+
+.main-inner {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-container {
+  width: 100%;
+  max-width: 800px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  align-items: center
+}
+
+/* + Add a reminder button */
+.toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px 10px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.circle-icon {
+  background-color: white;
+  color: #007bff;
+  border-radius: 50%;
+  font-size: 20px;
+  padding: 2px 10px;
+  margin-right: 8px;
+  margin-left: -2px;
+  font-weight: bold;
+}
+
+.toggle-button:hover .circle-icon {
+  background-color: #e6e6e6;
+  color: #0056b3;
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Section titles (Inbox, Upcoming, Completed) */
+.section {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.section h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.section h2 {
+  text-align: left !important;
+  margin-left: 0 !important;
+  justify-content: flex-start !important;
+  display: block !important;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 8px;
+}
+
+/* Reminder items */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.page-content li,
+.section-container li {
+    background-color: #f9f9f9;
+}
+
+li {
+  /* background-color: #f9f9f9;*/
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+/* Material icons */
+.material-symbols-outlined {
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+/* Action menu */
+.action-menu {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.action-menu.hidden {
+  display: none;
+}
+
+.action-menu button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.action-menu button:hover {
+  background-color: #eee;
+}
+
+/* Edit form */
+.edit-form {
+  margin-top: 10px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-form input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-form button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-form button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.edit-form button[type="button"] {
+  background-color: #ccc;
+  border: none;
+}
+
+/* Reminder form fields */
+#reminder-form {
+  width: 80%;
+  max-width: 800px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#reminder-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+#reminder-form input[type="text"],
+#reminder-form input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#reminder-form button[type="submit"] {
+  align-self: flex-start;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.section#inbox-section {
+    border-left: 5px solid #007bff;
+    padding-left: 15px;
+  }
+  
+.section#upcoming-section {
+    border-left: 5px solid #007bff;
+    padding-left: 15px;
+}
+  
+.section#completed-section {
+    border-left: 5px solid #007bff;
+    padding-left: 15px;
+}
+
+.reminder-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
+/* Style for "Show More" and "Collapse All" buttons */
+#show-more-btn-upcoming,
+#show-more-btn-inbox,
+#show-more-btn-completed,
+#collapse-btn-upcoming,
+#collapse-btn-inbox,
+#collapse-btn-completed {
+  background: none;
+  border: none;
+  color: black;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#show-more-btn-upcoming:hover,
+#show-more-btn-inbox:hover,
+#show-more-btn-completed:hover,
+#collapse-btn-upcoming:hover,
+#collapse-btn-inbox:hover,
+#collapse-btn-completed:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+#show-more-btn-upcoming:focus,
+#show-more-btn-inbox:focus,
+#show-more-btn-completed:focus,
+#collapse-btn-upcoming:focus,
+#collapse-btn-inbox:focus,
+#collapse-btn-completed:focus {
+  outline: none;
+}
+
+#reminder-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+/* Styling for individual Show More buttons for each section */
+#show-more-btn-upcoming,
+#show-more-btn-inbox,
+#show-more-btn-completed {
+  margin-right: auto;
+}
+
+/* Styling for individual Hide buttons for each section */
+#collapse-btn-upcoming,
+#collapse-btn-inbox,
+#collapse-btn-completed {
+  margin-left: auto;
+}
+
+.preload-hidden {
+  visibility: hidden;
+}
+
+ul:not(.preload-hidden) {
+  transition: opacity 0.2s ease-in;
+  opacity: 1;
+}
+
+.reminder-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.circle {
+  flex-shrink: 0;
+  padding-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.reminder-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.reminder-time {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.reminder-text {
+  flex-grow: 1;
+  min-width: calc(100% - 6rem);
+  font-weight: 500;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}

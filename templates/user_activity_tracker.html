@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Activity Tracker</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn"><img src="/static/icons/menu.png"></button>
+        <ul>
+            <li><a href="/user/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/user/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+            <li><a href="/user/activity/tracker"><img src="/static/icons/activity.png" class="icon"><span>Activity Tracker</span></a></li>
+            <li><a href="/user/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>
+            <li><a href="/user/reminders"><img src="/static/icons/reminders.png" class="icon"><span>Reminders</span></a></li>
+        </ul>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+                WellnessConnect
+            </h1>    
+        </div>
+
+        <main id="activity-container">
+            <!-- Water Intake -->
+            <div class="activities">
+                <h3 class="activity-type-label">Water Intake</h3>
+                <form method="POST" action="/log-activity" enctype="multipart/form-data">
+                    <input type="hidden" name="activity_type" value="water">
+                    <input type="hidden" name="unit" value="oz">
+                    <input type="text" name="value" placeholder="Enter water intake (oz)" required>
+                
+                    <input type="file" name="proof_image" id="proofInputWater" accept="image/*"
+                        style="display: none;" onchange="handleFileSelect(event, 'fileNameWater')">
+
+                    <label>Upload proof:</label><br>
+                    <button class="action-btn activity-btn" type="button" onclick="document.getElementById('proofInputWater').click()">Choose File</button>
+                    <span id="fileNameWater" class="file-name-label">No file selected</span>
+
+                    <br>
+                    <button class="action-btn activity-btn" type="submit">Log Water</button>
+                </form>
+            </div>
+            
+            <!-- Steps -->
+            <div class="activities">
+                <h3 class="activity-type-label">Steps</h3>
+                <form method="POST" action="/log-activity" enctype="multipart/form-data">
+                    <input type="hidden" name="activity_type" value="steps">
+                    <input type="hidden" name="unit" value="steps">
+                    <input type="text" name="value" placeholder="Enter number of steps taken" required>
+
+                    <input type="file" name="proof_image" id="proofInputSteps" accept="image/*"
+                        style="display: none;" onchange="handleFileSelect(event, 'fileNameSteps')">
+
+                    <label>Upload proof:</label><br>
+                    <button class="action-btn activity-btn" type="button" onclick="document.getElementById('proofInputSteps').click()">Choose File</button>
+                    <span id="fileNameSteps" class="file-name-label">No file selected</span>
+
+                    <br>
+                    <button class="action-btn activity-btn" type="submit">Log Steps</button>
+                </form>
+            </div>
+            
+            <!-- Exercise -->
+            <div class="activities">
+                <h3 class="activity-type-label">Exercises</h3>
+                <form method="POST" action="/log-activity" enctype="multipart/form-data">
+                    <input type="hidden" name="activity_type" value="exercise">
+                    <input type="text" name="value" placeholder="Enter exercise duration" class="input" required>
+                    <div class="form-row">
+                        <label>Duration:
+                            <select class="action-btn activity-drop-down" name="unit">
+                                <option value="minutes">Minutes</option>
+                                <option value="hours">Hours</option>
+                            </select>
+                        </label>
+                    
+                        <label>Type:
+                            <select class="action-btn activity-drop-down" name="exercise_type">
+                                <option value="">--Optional--</option>
+                                <option value="yoga">Yoga</option>
+                                <option value="run">Run</option>
+                                <option value="cycling">Cycling</option>
+                                <option value="strength">Strength</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </label>
+                    </div>                    
+
+                    <input type="file" name="proof_image" id="proofInputExercise" accept="image/*"
+                        style="display: none;" onchange="handleFileSelect(event, 'fileNameExercise')">
+
+                    <br>
+
+                    <label>Upload proof:</label><br>
+                    <button class="action-btn activity-btn" type="button" onclick="document.getElementById('proofInputExercise').click()">Choose File</button>
+                    <span id="fileNameExercise" class="file-name-label">No file selected</span>
+                    
+                    <br>
+                    <button class="action-btn activity-btn" type="submit">Log Exercise</button>
+                </form>
+            </div>
+            
+            <!-- Sleep -->
+            <div class="activities">
+                <h3 class="activity-type-label">Sleep</h3>
+                <form method="POST" action="/log-activity" enctype="multipart/form-data">
+                    <input type="hidden" name="activity_type" value="sleep">
+                    <input type="hidden" name="unit" value="hours">
+                    <input type="text" name="value" placeholder="Enter hours of sleep" class="input" required>
+
+                    <input type="file" name="proof_image" id="proofInputSleep" accept="image/*"
+                        style="display: none;" onchange="handleFileSelect(event, 'fileNameSleep')">
+
+                    <label>Upload proof:</label><br>
+                    <button class="action-btn activity-btn" type="button" onclick="document.getElementById('proofInputSleep').click()">Choose File</button>
+                    <span id="fileNameSleep" class="file-name-label">No file selected</span>
+
+                    <br>
+                    <button class="action-btn activity-btn" type="submit">Log Sleep</button>
+                </form>
+            </div>
+            <br>
+
+        </main>
+    </div>
+    
+    <!-- Global Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; border-radius: 10px; margin-bottom: 10px;">
+        </div>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=['activity']) %}
+        {% if messages %}
+            <script>
+            window.hasFlashMessage = true;
+            window.flashMessages = {{ messages | tojson }};
+            </script>
+        {% else %}
+            <script>
+            window.hasFlashMessage = false;
+            window.flashMessages = [];
+            </script>
+        {% endif %}
+    {% endwith %}
+
+
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

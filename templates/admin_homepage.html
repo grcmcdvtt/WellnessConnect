@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellnessConnect Admin Homepage</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn">
+            <img src="/static/icons/menu.png" alt="Menu">
+        </button>
+        
+        <ul>
+            <li><a href="/admin/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/admin/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+        </ul>
+    
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+    
+
+    <div class="page-content">
+        <h1>
+            <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+            WellnessConnect
+        </h1>
+
+        <main class="admin-activity-content">
+            <!-- PENDING LOGS -->
+            <div class="tables">
+                <h2>Pending Activity Logs</h2><br>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Logged At</th>
+                            <th>Activity</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Exercise Type</th>
+                            <th>Proof</th>
+                            <th>Proof Valid</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if pending_logs %}
+                            {% for log in pending_logs %}
+                            <tr class="pending-log-row {% if not loop.first %}hidden-row{% endif %}">
+                                <td>{{ log.user_id }}</td>
+                                <td>{{ log.logged_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ log.activity_type }}</td>
+                                <td>{{ log.value }}</td>
+                                <td>{{ log.unit or '' }}</td>
+                                <td>{{ log.exercise_type or '—' }}</td>
+                                <td>
+                                    {% if log.proof_url %}
+                                        <button class="action-btn" type="button" onclick="openProofModal('{{ url_for('static', filename=log.proof_url) }}')">
+                                            View
+                                        </button>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td>Pending</td>
+                                <td>
+                                    <form method="post" action="{{ url_for('approve_proof', log_id=log.log_id) }}">
+                                        <button class="action-btn" type="submit">Approve</button>
+                                    </form>
+                                    <form method="post" action="{{ url_for('reject_proof', log_id=log.log_id) }}">
+                                        <button class="action-btn" type="submit">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="9" style="text-align: center;">No pending activity logs.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>                
+                
+                {% if pending_logs|length > 1 %}
+                    <button class="toggle-btn" onclick="toggleLogSection('pending-log-row', this)">Show All</button>
+                {% endif %}
+                
+            </div>
+
+            <!-- APPROVED LOGS -->
+            <div class="tables">
+                <h2>Approved Activity Logs</h2><br>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Logged At</th>
+                            <th>Activity</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Exercise Type</th>
+                            <th>Proof</th>
+                            <th>Proof Valid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if approved_logs %}
+                            {% for log in approved_logs %}
+                            <tr class="approved-log-row {% if not loop.first %}hidden-row{% endif %}">
+                                <td>{{ log.user_id }}</td>
+                                <td>{{ log.logged_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ log.activity_type }}</td>
+                                <td>{{ log.value }}</td>
+                                <td>{{ log.unit or '' }}</td>
+                                <td>{{ log.exercise_type or '—' }}</td>
+                                <td>Yes</td>
+                                <td>Valid</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" style="text-align: center;">No approved activity logs.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                {% if approved_logs|length > 1 %}
+                    <button class="toggle-btn" onclick="toggleLogSection('approved-log-row', this)">Show All</button>
+                {% endif %}
+            </div>
+
+
+            <!-- REJECTED / NO PROOF -->
+            <div class="tables">
+                <h2>Rejected/No-Proof Activity Logs</h2><br>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Logged At</th>
+                            <th>Activity</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Exercise Type</th>
+                            <th>Proof</th>
+                            <th>Proof Valid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if rejected_logs %}
+                            {% for log in rejected_logs %}
+                            <tr class="rejected-log-row {% if not loop.first %}hidden-row{% endif %}">
+                                <td>{{ log.user_id }}</td>
+                                <td>{{ log.logged_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ log.activity_type }}</td>
+                                <td>{{ log.value }}</td>
+                                <td>{{ log.unit or '' }}</td>
+                                <td>{{ log.exercise_type or '—' }}</td>
+                                <td>{{ 'Yes' if log.proof else 'No' }}</td>
+                                <td>Rejected</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" style="text-align: center;">No rejected or no-proof activity logs found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                {% if rejected_logs and rejected_logs|length > 1 %}
+                    <button class="toggle-btn" onclick="toggleLogSection('rejected-log-row', this)">Show All</button>
+                {% endif %}
+            </div>
+
+
+            <!-- Modal to view proof before approving / rejecting -->
+            <div id="proofModal" class="modal">
+                <div class="modal-content">
+                <span class="close" onclick="closeProofModal()">&times;</span>
+                <img id="proofImagePreview" src="#" alt="Proof Image" style="max-width: 100%; border-radius: 10px;">
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn"><img src="/static/icons/menu.png"></button>
+        <ul>
+            <li><a href="/user/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/user/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+            <li><a href="/user/activity/tracker"><img src="/static/icons/activity.png" class="icon"><span>Activity Tracker</span></a></li>
+            <li><a href="/user/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>
+            <li><a href="/user/reminders"><img src="/static/icons/reminders.png" class="icon"><span>Reminders</span></a></li>
+        </ul>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+                WellnessConnect
+            </h1>    
+        </div>
+
+        <main class="main-content" id="account-dashboard">
+            <div id="dashboard-title">
+                <h2>User Account</h2>
+            </div>
+            
+            <div class="dashboard-grid">
+                
+                <div class="dashboard-left-column">
+
+                    {% set profile_src = url_for('static', filename=user.profile_picture) if user.profile_picture else url_for('static', filename='icons/user_icon.png') %}
+                
+                    <div class="profile-pic-wrapper" onclick="openModal()">
+                        <img src="{{ profile_src }}" alt="Profile Picture" class="rounded-profile profile-md">
+                        <div class="edit-overlay">
+                            <img src="/static/icons/edit.png" alt="Edit Icon">
+                        </div>
+                    </div>
+                
+                    <!-- Profile Picture Upload Modal -->
+                    <div id="uploadModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal()">&times;</span>
+                
+                            {% if user.profile_picture %}
+                            <form action="{{ url_for('remove_profile_pic') }}" method="POST">
+                                <button class="action-btn" type="submit" class="remove-btn">Remove Profile Picture</button>
+                            </form>
+                            {% endif %}
+                
+                            <form action="{{ url_for('upload_profile_pic') }}" method="POST" enctype="multipart/form-data">
+                                <input type="file" name="profile_pic" accept="image/*" required onchange="previewImage(event)">
+                                <br><br>
+                                <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width:100%; border-radius: 10px; margin-bottom: 10px;">
+                                <button class="action-btn" type="submit">Upload</button>
+                
+								<!-- FLASH MESSAGES -->
+                                {% with messages = get_flashed_messages(with_categories=true, category_filter=['profile']) %}
+                                    {% if messages %}
+                                        <div class="flash-messages">
+                                            {% for category, message in messages %}
+                                                <p class="flash {{ category }}">{{ message.replace('\n', '<br>') | safe }}</p>
+                                            {% endfor %}
+                                        </div>
+                                        <script>
+                                            window.hasFlashMessage = true;
+                                            window.flashMessages = {{ messages | tojson }};
+                                        </script>
+                                    {% endif %}
+                                {% endwith %}
+                            </form>
+                        </div>
+                    </div>
+                
+                    <br>
+                    
+                </div>
+                
+
+                <div class="dashboard-right-column">
+                    <div class="info">
+                        <h3><u>{{ user.username }}</u></h3>
+                        <br>
+                        <h4>Contact Info:</h4>
+                        <p>Email: {{ user.email }}</p>
+                        <p>Phone: {{ user.phone_number }}</p>
+                        <br>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,607 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+
+/* GLOBAL */
+* {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* LOGO */
+h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+h2 {
+    text-align: center;
+}
+
+textarea {
+    padding: 10px;
+}
+
+/* ICONS */
+.icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 12px;
+}
+
+/* ---------- Sidebar ---------- */
+body {
+    background-color: #f8f8f8;
+}
+
+.sidebar {
+    width: 60px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    justify-content: space-between;
+    padding: 15px 0 20px;
+
+}
+
+.sidebar.expanded {
+    width: 220px;
+    align-items: flex-start;
+    padding-left: 15px;
+}
+
+.sidebar.expanded ~ .page-content {
+    margin-left: 220px; /* expanded sidebar width */
+}
+
+/* Toggle & Logout Button */
+.toggle-btn, .logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Resize button icons */
+.toggle-btn img, .logout-btn img {
+    width: 25px;
+    height: 25px;
+    display: block;
+}
+
+/* Move toggle button when expanded */
+.sidebar.expanded .toggle-btn {
+    align-self: flex-end;
+    justify-content: flex-end;
+    margin-right: 15px;
+}
+
+/* Sidebar Menu */
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li a{
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar ul li:hover, .logout-btn:hover {
+    background: #f0f0f0;
+}
+
+/* Hide text when collapsed */
+.sidebar ul li span, .logout-btn span {
+    display: none;
+}
+
+/* Show text when expanded */
+.sidebar.expanded ul li span, .sidebar.expanded .logout-btn span {
+    display: inline;
+}
+
+/* Logout Hover */
+.logout-btn:hover {
+    color: #d9534f;
+}
+
+/* --- Auth Page Layout --- */
+.auth-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 350px;
+    margin: 60px auto;
+}
+
+.auth-container p{
+    text-align: center;
+}
+
+.auth-inner {
+    width: 100%;
+}
+
+.auth-inner h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.auth-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.02);
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* .flash-messages {
+    padding-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9rem;
+    color: red;
+} */
+
+@media (max-width: 400px) {
+    .auth-container {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
+
+/* ------ CUSTOMER PAGES ------ */
+/* MAIN CONTENT GLOBAL */
+.main-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.page-content {
+    padding: 0px 20px 0px 20px;
+    margin-left: 60px; /* default sidebar width */
+    transition: margin-left 0.3s ease;
+}
+
+/* ------ CUSTOMER - Homepage ------ */
+/* Progress Bar */
+.timeline-bar {
+    width: 80%;
+    height: 25px;
+    margin: 0 auto;
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.timeline-labels {
+    width: 80%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+.timeline-labels span {
+    min-width: 40px;
+    text-align: center;
+}
+.progress-streak-container {
+    width: 80%;
+    margin: 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.streak-box {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff5722;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+}
+
+.points-tracker {
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.streak-side {
+    background-color: #fff3e0;
+    color: #e65100;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 8px 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .streak-side {
+        position: static;
+        transform: none;
+        margin: 10px auto;
+        display: block;
+        text-align: center;
+    }
+}
+
+.progress-streak-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 20px auto;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.progress-fill {
+    height: 100%;
+    /* background: linear-gradient(to right, #90caf9, #e3f2fd); */
+    background: linear-gradient(to right, #007BFF, #90caf9);
+    border-radius: 20px 0 0 20px;
+    transition: width 0.4s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: white;
+    font-weight: bold;
+}
+
+.progress-text {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+#pts-hub {
+    display: flex; 
+    justify-content: center; 
+    margin-top: 8px;
+}
+
+#pts-hub-items {
+    background: #90caf9; 
+    color: #555; 
+    font-weight: 600; 
+    padding: 6px 14px; 
+    border-radius: 12px; 
+    font-size: 0.95rem; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 12px; 
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Leaderboard Section */
+#leaderboard-container {
+    text-align: center;
+}
+
+.leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.leaderboard th, .leaderboard td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.leaderboard th {
+    background-color: #9fa2a6;
+    color: white;
+}
+
+/* ------ ACCOUNT CENTER PAGE ------ */
+#dashboard-title {
+    text-align: center;
+}
+.dashboard-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.dashboard-left-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 40px;
+}
+
+.dashboard-right-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 40px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+.profile-pic-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+}
+
+.rounded-profile {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid black;
+    display: block;
+}
+
+.profile-md {
+    width: 120px;
+    height: 120px;
+}
+
+.edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.edit-overlay img {
+    width: 32px;
+    height: 32px;
+    filter: invert(1);
+}
+
+.profile-pic-wrapper:hover .edit-overlay {
+    opacity: 1;
+}
+
+/* General Tables and  Panel Styling */
+.tables, .homepage-panels, .activities, .points-view {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.tables {
+    overflow-x: auto;
+    width: 100%;
+}
+.tables table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tables, .homepage-panels, .points-view h2 {
+    text-align: center;
+}
+
+.tables th,
+.tables td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+}
+
+.tables th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.tables tr:hover {
+    background-color: #f1f1f1;
+}
+
+.hidden-row {
+    display: none;
+  }
+  
+.form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-row label {
+    display: flex;
+    flex-direction: column;
+}
+
+.file-name-label {
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.activity-type-label {
+    font-weight: bold;
+}
+
+.flash-messages {
+    padding-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Activity Tracker Page */
+#is_active {
+    width: 10%;
+}
+
+.action-btn{
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: 555;
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 1px solid grey;
+    text-align: center;
+}
+
+.activity-drop-down {
+    width: 100%;
+    max-width: 120px;
+}
+
+.activity-btn {
+    width: 100%;
+    max-width: 90px;
+}
+
+.activity-drop-down:hover, .action-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.store-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    width: 150px;
+    margin: 15px auto 0px auto;
+}
+
+.store-link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Reminders</title>
+    <link rel="stylesheet" href="/static/reminders.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" />
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn"><img src="/static/icons/menu.png"></button>
+        <ul>
+            <li><a href="/user/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/user/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+            <li><a href="/user/activity/tracker"><img src="/static/icons/activity.png" class="icon"><span>Activity Tracker</span></a></li>
+            <li><a href="/user/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>
+            <li><a href="/user/reminders"><img src="/static/icons/reminders.png" class="icon"><span>Reminders</span></a></li>
+        </ul>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+                WellnessConnect
+            </h1>    
+        </div>
+
+        <main class="main-content" id="reminder-container">
+            <div class="main-inner">
+                <button class="toggle-button" onclick="toggleForm()">
+                    <span class="circle-icon">+</span>
+                    <span>Add a reminder</span>
+                </button>
+
+                <div id="reminder-form" class="form-section hidden">
+                    <form method="POST">
+                    <label for="reminder_time">Reminder Time:</label>
+                    <input type="datetime-local" name="reminder_time" required>
+                    <label for="description">Reminder Description:</label>
+                    <input type="text" name="description" maxlength="149" required>
+                    <label>
+                        <input type="checkbox" name="send_sms"> Send via SMS
+                    </label>
+                    <button type="submit">Create</button>
+                    </form>
+                </div>
+        
+                <div class="section-container">
+                    <div class="section" id="inbox-section">
+                        <h2>Reminders Inbox</h2>
+                        <ul id="inbox">
+                            {% for reminder in inbox_reminders %}
+                            <li class="reminder-item" data-id="{{ reminder.reminder_id }}">
+                                <div class="reminder-content">
+                                    <div class="circle">
+                                        <span class="material-symbols-outlined check-circle" onclick="toggleComplete(this, '{{ reminder.reminder_id }}', true)">
+                                            radio_button_unchecked
+                                        </span>
+                                    </div>
+                                    <div class="reminder-main">
+                                        <div class="reminder-line">
+                                            <span class="reminder-time">{{ reminder.reminder_time.strftime('%m/%d/%y %I:%M %p') }}</span>
+                                            <span class="reminder-text">{{ reminder.description }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="actions">
+                                    <span class="material-symbols-outlined action-toggle" onclick="toggleActionMenu(this)">
+                                        more_horiz
+                                    </span>
+                                    <div class="action-menu hidden">
+                                        <span class="material-symbols-outlined edit" onclick="showEditForm(this)">edit</span>
+                                        <span class="material-symbols-outlined delete" data-reminder-id="${r.id}" onclick="deleteReminder(this)">delete</span>
+                                    </div>
+                                </div>
+
+                      
+                                <form class="edit-form hidden" method="POST" action="/reminders/edit/{{ reminder.reminder_id }}" onsubmit="submitEdit(event, this)" data-reminder-id="{{ reminder.reminder_id }}">
+                                    <input type="datetime-local" name="edit_time" required>
+                                    <input type="text" name="edit_description" maxlength="149" required>
+                                    <button type="submit">Save</button>
+                                    <button type="button" onclick="cancelEdit(this)">Cancel</button>
+                                </form>
+                            </li>
+                            {% else %}
+                                <li id="no-inbox">No past reminders.</li>
+                            {% endfor %}
+                        </ul>
+                        <div id="reminder-controls" class="reminder-controls">
+                            <button id="show-more-btn-inbox" class="hidden" onclick="showMoreReminders('inbox')">Show More</button>
+                            <button id="collapse-btn-inbox" class="hidden" onclick="collapseReminders('inbox')">Hide</button>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="section-container">
+                    <div class="section" id="upcoming-section">
+                        <h2>Upcoming Reminders</h2>
+                        <ul id="upcoming">
+                            {% for reminder in upcoming_reminders %}
+                            <li class="reminder-item" data-id="{{ reminder.reminder_id }}">
+                                <div class="reminder-content">
+                                    <div class="reminder-main">
+                                        <div class="reminder-line">
+                                            <span class="reminder-time">{{ reminder.reminder_time.strftime('%m/%d/%y %I:%M %p') }}</span>
+                                            <span class="reminder-text">{{ reminder.description }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="actions">
+                                        <span class="material-symbols-outlined action-toggle" onclick="toggleActionMenu(this)">
+                                        more_horiz
+                                        </span>
+                                        <div class="action-menu hidden">
+                                            <span class="material-symbols-outlined edit" onclick="showEditForm(this)">edit</span>
+                                            <span class="material-symbols-outlined delete" data-reminder-id="${r.id}" onclick="deleteReminder(this)">delete</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form class="edit-form hidden" method="POST" action="/reminders/edit/{{ reminder.reminder_id }}" onsubmit="submitEdit(event, this)" data-reminder-id="{{ reminder.reminder_id }}">
+                                    <input type="datetime-local" name="edit_time" required>
+                                    <input type="text" name="edit_description" maxlength="149" required>
+                                    <button type="submit">Save</button>
+                                    <button type="button" onclick="cancelEdit(this)">Cancel</button>
+                                </form>
+                            </li>
+                            {% else %}
+                                <li>No upcoming reminders.</li>
+                            {% endfor %}
+                        </ul>
+                        <div id="reminder-controls" class="reminder-controls">
+                            <button id="show-more-btn-upcoming" class="hidden" onclick="showMoreReminders('upcoming')">Show More</button>
+                            <button id="collapse-btn-upcoming" class="hidden" onclick="collapseReminders('upcoming')">Hide</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="section-container">
+                    <div class="section" id="completed-section">
+                        <div class="section-header">
+                            <h2>Completed Reminders</h2>
+                            <span id="delete-all-icon" class="material-symbols-outlined" onclick="deleteAllCompleted()">delete</span>
+                        </div>
+                        <ul id="completed">
+                            {% for reminder in completed_reminders %}
+                            <li class="reminder-item" data-id="{{ reminder.reminder_id }}">
+                                <div class="reminder-content">
+                                    <div class="circle">
+                                        <span class="material-symbols-outlined check-circle" onclick="toggleComplete(this, '{{ reminder.reminder_id }}', false)">
+                                            check_circle
+                                        </span>
+                                    </div>
+
+                                    <div class="reminder-main">
+                                        <div class="reminder-line">
+                                            <span class="reminder-time">{{ reminder.reminder_time.strftime('%m/%d/%y %I:%M %p') }}</span>
+                                            <span class="reminder-text">{{ reminder.description }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="actions">
+                                        <span class="material-symbols-outlined action-toggle" onclick="toggleActionMenu(this)">
+                                            more_horiz
+                                        </span>
+
+                                        <div class="action-menu hidden">
+                                            <span class="material-symbols-outlined delete" data-reminder-id="${r.id}" onclick="deleteReminder(this)">delete</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </li>
+                            {% else %}
+                                <li>No completed reminders.</li>
+                            {% endfor %}
+                        </ul>
+
+                        <div id="reminder-controls" class="reminder-controls">
+                            <button id="show-more-btn-completed" class="hidden" onclick="showMoreReminders('completed')">Show More</button>
+                            <button id="collapse-btn-completed" class="hidden" onclick="collapseReminders('completed')">Hide</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div> 
+        </main>
+    </div>
+    
+    <script src="/static/reminders.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Vouchers</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn"><img src="/static/icons/menu.png"></button>
+        <ul>
+            <li><a href="/user/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>            
+            <li><a href="/user/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+            <li><a href="/user/activity/tracker"><img src="/static/icons/activity.png" class="icon"><span>Activity Tracker</span></a></li>
+            <li><a href="/user/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>
+            <li><a href="/user/reminders"><img src="/static/icons/reminders.png" class="icon"><span>Reminders</span></a></li>
+        </ul>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+                WellnessConnect
+            </h1>    
+        </div>
+        
+        <!-- MY VOUCHERS -->
+        <div class="tables">
+            <h2>My Vouchers</h2><br>
+            <table>
+            <thead>
+                <tr>
+                <th>Company</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Acquired At</th>
+                <th>Status</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set my_available_vouchers = user_vouchers | selectattr('redeemed', 'equalto', false) | list %}
+                {% if my_available_vouchers %}
+                {% for owned in my_available_vouchers %}
+                <tr class="my-voucher-row {% if not loop.first %}hidden-row{% endif %}">
+                    <td>{{ owned['company_name'] }}</td>
+                    <td>{{ owned['title'] }}</td>
+                    <td>{{ owned['description'] or '—' }}</td>
+                    <td>{{ owned['acquired_at'].strftime('%Y-%m-%d %H:%M') if owned['acquired_at'] else '—' }}</td>
+                    <td>Available</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('redeem_voucher', user_voucher_id=owned['user_voucher_id']) }}" onsubmit="event.preventDefault(); openConfirmModal('Redeem this voucher?', this);" style="display:inline;">
+                            <button class="action-btn" type="submit">Redeem</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">No available vouchers.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+            </table>
+        
+            {% if my_available_vouchers|length > 1 %}
+            <button class="toggle-btn" onclick="toggleLogSection('my-voucher-row', this)">Show All</button>
+            {% endif %}
+        </div>
+  
+    
+        <!-- REDEEMED VOUCHERS -->
+        <div class="tables">
+            <h2>Redeemed Vouchers</h2><br>
+            <table>
+                <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Redeemed At</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set redeemed_vouchers = user_vouchers | selectattr('redeemed') | list %}
+                {% if redeemed_vouchers %}
+                    {% for owned in redeemed_vouchers %}
+                    <tr class="redeemed-voucher-row {% if not loop.first %}hidden-row{% endif %}">
+                    <td>{{ owned['company_name'] }}</td>
+                    <td>{{ owned['title'] }}</td>
+                    <td>{{ owned['description'] or '—' }}</td>
+                    <td>{{ owned['redeemed_at'].strftime('%Y-%m-%d %H:%M') if owned['redeemed_at'] else '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                    <td colspan="4" style="text-align: center;">You have not redeemed any vouchers yet.</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+          
+            {% if redeemed_vouchers|length > 1 %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                <button class="toggle-btn" onclick="toggleLogSection('redeemed-voucher-row', this)">Show All</button>
+            
+                <form method="POST" action="{{ url_for('clear_redeemed_vouchers') }}"
+                      onsubmit="event.preventDefault(); openConfirmModal('Clear all redeemed vouchers?', this);"
+                      style="display: inline;">
+                    <button class="action-btn" type="submit" style="white-space: nowrap;">Clear Redeemed Vouchers</button>
+                </form>
+            </div>
+            
+            {% endif %}
+        </div>          
+
+        <!-- VOUCHERS STORE -->
+        <div class="tables">
+            <h2>Vouchers Store</h2>
+            <p><strong>Spendable Points:</strong> {{ spendable_points }}</p><br>
+            <table>
+            <thead>
+                <tr>
+                <th>Company</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Cost (Points)</th>
+                <th>Quantity Left</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if available_vouchers %}
+                {% for voucher in available_vouchers %}
+                <tr class="store-voucher-row {% if not loop.first %}hidden-row{% endif %}">
+                    <td>{{ voucher.company_name }}</td>
+                    <td>{{ voucher.title }}</td>
+                    <td>{{ voucher.description or '—' }}</td>
+                    <td>{{ voucher.cost_in_points }}</td>
+                    <td>{{ voucher.available_quantity }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('buy_voucher', voucher_id=voucher['voucher_id']) }}" onsubmit="event.preventDefault(); openConfirmModal('Buy this voucher?', this);" style="display:inline;">
+                            <button class="action-btn" type="submit">Buy</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">There are no available vouchers to buy.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+            </table>
+        
+            {% if available_vouchers and available_vouchers|length > 1 %}
+            <button class="toggle-btn" onclick="toggleLogSection('store-voucher-row', this)">Show All</button>
+            {% endif %}
+        </div>
+  
+    </div>
+    
+    <!-- Global Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="confirmMessage"></p>
+            <div id="confirmButtons" style="margin-top: 20px; text-align: center;">
+                <button class="action-btn" onclick="confirmAction()" style="margin-right: 10px;">Yes</button>
+                <button class="action-btn" onclick="closeModal()">No</button>
+            </div>          
+        </div>
+    </div>
+      
+    
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=['vouchers']) %}
+        {% if messages %}
+            <script>
+            window.hasFlashMessage = true;
+            window.flashMessages = {{ messages | tojson }};
+            </script>
+        {% else %}
+            <script>
+            window.hasFlashMessage = false;
+            window.flashMessages = [];
+            </script>
+        {% endif %}
+    {% endwith %}
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>

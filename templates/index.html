@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Welcome to WellnessConnect!</title>
+</head>
+<body id="login_page">
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px">
+                WellnessConnect
+            </h1>
+        </div>
+
+        <div class="auth-container">
+            <div class="auth-inner">
+                <h3>Login</h3>
+                <form action="/login" method="POST">
+                    <input type="text" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button class="auth-button" type="submit">Sign In</button>
+
+                    {% if error %}
+                    <div class="flash-messages">
+                        Invalid email or password.<br>Please try again.
+                    </div>
+                    {% endif %}
+                </form>
+
+                <br>
+                <p>Not a User?</p>
+                <a class="back-link" href="/user/register"><br>Signup</a>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

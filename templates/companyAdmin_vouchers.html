@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Admin Vouchers</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="toggle-btn"><img src="/static/icons/menu.png"></button>
+        <ul>
+            <li><a href="/companyAdmin/homepage"><img src="/static/icons/home.png" class="icon"><span> Home</span></a></li>        
+            <li><a href="/companyAdmin/vouchers"><img src="/static/icons/vouchers.png" class="icon"><span>Vouchers</span></a></li>    
+            <li><a href="/companyAdmin/account"><img src="/static/icons/account.png" class="icon"><span>Account Center</span></a></li>
+        </ul>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="location.href='/logout'">
+            <img src="/static/icons/logout.png" class="icon"><span>Logout</span>
+        </button>
+    </div>
+
+    <div class="page-content">
+        <div>
+            <h1>
+                <img id="wellness_icon" src="/static/icons/logo.png" width="40px" alt="Icon">
+                WellnessConnect
+            </h1>    
+        </div>
+
+        <main class="main-content" id="voucher-container">
+            <form action="/add-voucher" method="POST">
+                <h2>Add New Voucher</h2><br>
+              
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title" maxlength="100" required><br><br>
+              
+                <label for="description">Description:</label><br>
+                <textarea id="description" name="description" rows="4" cols="50"></textarea><br><br>
+              
+                <label for="cost_in_points">Cost in Points:</label><br>
+                <input type="number" id="cost_in_points" name="cost_in_points" min="0" required><br><br>
+              
+                <label for="available_quantity">Available Quantity:</label><br>
+                <input type="number" id="available_quantity" name="available_quantity" min="1" required><br><br>
+              
+                <label for="is_active">Is Active:</label>
+                <input type="checkbox" id="is_active" name="is_active" checked><br><br>
+              
+                <button class="action-btn" type="submit">Add Voucher</button>
+            </form>
+
+        </main>
+    </div>      
+
+    <!-- Global Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="confirmMessage"></p>
+            <div id="confirmButtons" style="margin-top: 20px; text-align: center;">
+                <button class="action-btn" onclick="confirmAction()" style="margin-right: 10px;">Yes</button>
+                <button class="action-btn" onclick="closeModal()">No</button>
+            </div>          
+        </div>
+    </div>
+      
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=['company_voucher']) %}
+        {% if messages %}
+            <script>
+            window.hasFlashMessage = true;
+            window.flashMessages = {{ messages | tojson }};
+            </script>
+        {% else %}
+            <script>
+            window.hasFlashMessage = false;
+            window.flashMessages = [];
+            </script>
+        {% endif %}
+    {% endwith %}
+    
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>
