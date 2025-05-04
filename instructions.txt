@@ -1,0 +1,7 @@
+Clone the repo
+
+Set up the postgres database (create statements in "tables.sql)
+
+Set up an .env with your secret key and db uri
+
+Run app.py and scheduler.py in two terminals
